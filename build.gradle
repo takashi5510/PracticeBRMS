@@ -1,0 +1,79 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.3.RELEASE'
+		groovyVersion = '2.4.7'
+		spockVersion = '1.1-groovy-2.4-rc-2'
+		droolsVersion = "7.0.0.Final"
+	}
+	repositories {
+		mavenCentral()
+		maven {
+			url 'https://repository.jboss.org/nexus/content/groups/public/'
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+	baseName = 'DeliveryCostCalcBatch'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+// Encoding
+def defaultEncoding = 'UTF-8'
+compileJava {
+	options.encoding = defaultEncoding  // src/main/java配下の*.javaに影響(JAVA_OPTS=-Dfile.encoding で代替可能)
+}
+compileTestJava {
+    options.encoding = defaultEncoding  // src/test/java配下の*.javaに影響(JAVA_OPTS=-Dfile.encoding で代替可能)
+}
+compileGroovy {
+    groovyOptions.encoding = defaultEncoding  // src/main/groovy配下の*.groovyに影響
+    options.encoding = defaultEncoding        // src/main/groovy配下の*.javaに影響
+}
+compileTestGroovy {
+    groovyOptions.encoding = defaultEncoding  // src/test/groovy配下の*.groovyに影響
+    options.encoding = defaultEncoding        // src/test/groovy配下の*.javaに影響
+}
+
+
+dependencies {
+	// Groovy
+	compile("org.codehaus.groovy:groovy-all:${groovyVersion}")
+	// Spring Batch
+	compile("org.springframework.boot:spring-boot-starter-batch:${springBootVersion}")
+	// Mail
+	compile("org.springframework.boot:spring-boot-starter-mail")
+	// DataBase
+	compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
+	compile("commons-dbcp:commons-dbcp")
+	runtime('com.h2database:h2')
+	// Test
+	testCompile(
+		"org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+		"org.spockframework:spock-core:${spockVersion}",
+		"org.spockframework:spock-spring:${spockVersion}",
+		"org.gmock:gmock:0.8.2",
+		"com.icegreen:greenmail:1.4.1",
+		"org.springframework.batch:spring-batch-test",
+		"cglib:cglib-nodep:2.2",
+	)
+	// Drools
+	compile("org.kie:kie-api:${droolsVersion}")
+	compile("org.drools:drools-compiler:${droolsVersion}")
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.13'
+}
