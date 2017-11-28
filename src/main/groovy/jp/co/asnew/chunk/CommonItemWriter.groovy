@@ -16,7 +16,9 @@ class CommonItemWriter implements ItemWriter<Object> {
 	@Override
 	public void write(List<? extends Object> items) throws Exception {
 		items.each { item ->
-			log.info("commonItemWriter Execute. item.volume: ${item.volume}, item.cost: ${item.cost}")
+			item.each { i ->
+				log.info("commonItemWriter Execute. item.volume: ${i.volume}, item.cost: ${i.cost}")
+			}
 		}
 	}
 	

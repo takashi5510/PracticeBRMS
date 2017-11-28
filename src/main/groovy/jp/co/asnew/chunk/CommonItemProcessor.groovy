@@ -22,20 +22,32 @@ class CommonItemProcessor implements ItemProcessor<Object, Object> {
 	public Object process(Object item) throws Exception {
 		
 		log.info("${getClass().getSimpleName()} Execute. item: ${item}")
-		
-		KieServices ks = KieServices.Factory.get()
-		KieContainer kContainer = ks.getKieClasspathContainer()
-		KieSession kSession = kContainer.newKieSession("ksession-rules")
 
-		Report report = new Report()
-		report.volume = item
-		UnitCost unitCost = new UnitCost()
+		List nextItems = []
 
-		kSession.insert(report)
-		kSession.insert(unitCost)
-		kSession.fireAllRules()
-
-		unitCost
+		[1,2,3,4,5,6,7,8,9].each {		
+			KieServices ks = KieServices.Factory.get()
+			KieContainer kContainer = ks.getKieClasspathContainer()
+	//		KieSession kSession = kContainer.newKieSession("ksession-rules")
+			KieSession kSession = kContainer.newKieSession("ksession-rules-sub")
+	
+			Report report = new Report()
+			report.volume = item
+			UnitCost unitCost = new UnitCost()
+	
+			kSession.insert(report)
+			kSession.insert(unitCost)
+			
+			kSession.getAgenda().getAgendaGroup("agendaA").setFocus()
+			kSession.getAgenda().getAgendaGroup("agendaSub1").setFocus()
+			
+			kSession.fireAllRules()
+	
+			kSession.dispose()
+	
+			nextItems << unitCost
+		}
+		nextItems
 		
 	}
 	
