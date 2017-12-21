@@ -3,42 +3,76 @@ package jp.co.asnew
 import jp.co.asnew.chunk.*
 import jp.co.asnew.entity.*
 
-rule "1 rule"
-//	salience 1
-	activation-group "RuleA"
+rule "common Rules 1"
+	// rule attribute
+	salience 1
+	activation-group "commonRulesA"
 	no-loop false
 	lock-on-active true
-	agenda-group "agendaA"
+	agenda-group "commonRulesA"
+	// rule
 	when
-		$report : Report( volume == 1 )
-		$unitCost : UnitCost()
+		$report: Report(volume == 1)
+		$unitCost: UnitCost()
 	then
-		modify($unitCost) { setVolume($report.getVolume()), setCost(10 * $report.getVolume()) };
-	end
+		modify($unitCost) {
+			setVolume($report.getVolume()),
+			setCost(10 * $report.getVolume())
+		};
+end
 
-rule "2 rule"
-//	salience 50
-	activation-group "RuleA"
+rule "common Rules 2"
+	// rule attribute
+	salience 50
+	activation-group "commonRulesA"
 	no-loop false
 	lock-on-active true
-	agenda-group "agendaA"
+	agenda-group "commonRulesA"
+	// rule
 	when
-		$report : Report( volume == 2 || volume == 1)
-		$unitCost : UnitCost()
+		$report: Report(volume == 2 || == 1)
+		$unitCost: UnitCost()
 	then
-		modify($unitCost) { setVolume($report.getVolume()), setCost(100 * $report.getVolume()) };
-	end
+		modify($unitCost) {
+			setVolume($report.getVolume()),
+			setCost(100 * $report.getVolume())
+		};
+end
 
-rule "3 rule"
-//	salience 100
-	activation-group "RuleA"
+rule "common Rules 3"
+	// rule attribute
+	salience 100
+	activation-group "commonRulesA"
 	no-loop false
 	lock-on-active true
-	agenda-group "agendaB"
+	agenda-group "commonRulesA"
 //	auto-focus true
+	// rule
 	when
-		$report : Report( volume == 3 || volume == 1 )
-		$unitCost : UnitCost()
+		$report: Report(volume == 3 || == 1)
+		$unitCost: UnitCost()
 	then
-		modify($unitCost) { setVolume($report.getVolume()), setCost($report.getVolume()) };
-	end
+		modify($unitCost) {
+			setVolume($report.getVolume()),
+			setCost(1 * $report.getVolume())
+		};
+end
+
+rule "common Rules 3B"
+	// rule attribute
+	salience 100
+	activation-group "commonRulesB"
+	no-loop false
+	lock-on-active true
+	agenda-group "commonRulesB"
+//	auto-focus true
+	// rule
+	when
+		$report: Report(volume == 3 || == 1)
+		$unitCost: UnitCost()
+	then
+		modify($unitCost) {
+			setVolume($report.getVolume()),
+			setCost(2 * $report.getVolume())
+		};
+end

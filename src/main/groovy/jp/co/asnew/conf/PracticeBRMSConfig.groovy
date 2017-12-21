@@ -36,13 +36,27 @@ class PracticeBRMSConfig {
 	CommonItemProcessor commonItemProcessor
 	
 	@Autowired
+	CommonSubItemProcessor commonSubItemProcessor
+
+	@Autowired
 	CommonItemWriter commonItemWriter
 	
+	@Autowired
+	SampleItemReader sampleItemReader
+	
+	@Autowired
+	SampleEntryFeeItemProcessor sampleEntryFeeItemProcessor
+
+	@Autowired
+	SampleItemWriter sampleItemWriter
+
 	@Bean
 	Job simpleJob() {
 		jobBuilderFactory.get('simpleJob')
 			.listener(commonJobListener)
 			.start(simpleChunkStep())
+			.next(simpleSubChunkStep())
+			.next(sampleEntryChunkStep())
 			.build()
 	}
 
@@ -55,4 +69,21 @@ class PracticeBRMSConfig {
 			.build()
 	}
 	
+	Step simpleSubChunkStep() {
+		stepBuilderFactory.get('simpleSubChunkStep')
+			.<Object, Object> chunk(1)
+			.reader(commonItemReader)
+			.processor(commonSubItemProcessor)
+			.writer(commonItemWriter)
+			.build()
+	}
+	
+	Step sampleEntryChunkStep() {
+		stepBuilderFactory.get('sampleEntryChunkStep')
+			.<Object, Object> chunk(1)
+			.reader(sampleItemReader)
+			.processor(sampleEntryFeeItemProcessor)
+			.writer(sampleItemWriter)
+			.build()
+	}
 }

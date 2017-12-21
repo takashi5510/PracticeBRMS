@@ -1,0 +1,60 @@
+package jp.co.asnew
+
+import jp.co.asnew.chunk.*
+import jp.co.asnew.entity.*
+
+// 入庫料-雑誌
+rule "1-1"
+	// rule attributes
+	activation-group "EntryFee"
+	no-loop false
+	lock-on-active true
+	agenda-group "EntryFee"
+	// rule
+	when
+		$entryReport: EntryReport(isProduct == 1)
+		$masterRecord: MasterUnitCost(
+			conditionStartDate <= $entryReport.entryDate && 
+			conditionEndDate >= $entryReport.entryDate && 
+			costStartDate <= $entryReport.entryDate && 
+			costEndDate >= $entryReport.entryDate && 
+			ruleName == "1-1"
+		)
+		$deliveryCost: DeliveryCost()
+	then
+		modify($deliveryCost) {
+			setDeliveryVendorID($masterRecord.getDeliveryVendorID()),
+			setMasterDeliveryCostConditionID($masterRecord.getMasterDeliveryCostConditionID()),
+			setScheduleID($entryReport.getScheduleID()),
+			setVolume($entryReport.getVolume()),
+			setUnitCost($masterRecord.getUnitCost())
+		};
+end
+
+// 入庫料-特典
+rule "1-2"
+	// rule attributes
+	activation-group "EntryFee"
+	no-loop false
+	lock-on-active true
+	agenda-group "EntryFee"
+	// rule
+	when
+		$entryReport: EntryReport(isProduct == 0)
+		$masterRecord: MasterUnitCost(
+			conditionStartDate <= $entryReport.entryDate && 
+			conditionEndDate >= $entryReport.entryDate &&  
+			costStartDate <= $entryReport.entryDate && 
+			costEndDate >= $entryReport.entryDate && 
+			ruleName == "1-2"
+		)
+		$deliveryCost: DeliveryCost()
+	then
+		modify($deliveryCost) {
+			setDeliveryVendorID($masterRecord.getDeliveryVendorID()),
+			setMasterDeliveryCostConditionID($masterRecord.getMasterDeliveryCostConditionID()),
+			setScheduleID($entryReport.getScheduleID()),
+			setVolume($entryReport.getVolume()),
+			setUnitCost($masterRecord.getUnitCost())
+		};
+end

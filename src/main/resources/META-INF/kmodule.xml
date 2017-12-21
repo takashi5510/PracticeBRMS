@@ -5,4 +5,7 @@
      <kbase name="rules-sub1" packages="rules.sub1">
      	<ksession name="ksession-rules-sub" />
      </kbase>
+     <kbase name="entry-fee" packages="rules.entry">
+     	<ksession name="ksession-rules-entry" />
+     </kbase>
  </kmodule>
